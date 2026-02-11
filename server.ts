@@ -33,11 +33,13 @@ app.get('/users/:username', (req, res) => {
     return res.json(result)
 })
 
-app.post('/users', (req, res) => {
+app.post('/users',async (req, res) => {
     const { username, birthdate } = req.body
-    const user = { id: Date.now().toString(), username, birthdate }
-    users.push(user)
-    res.status(201).json(user)
+    pool.promise().execute(
+        'INSERT INTO users (username, birthdate) VALUES (?, ?)',
+        [username, birthdate]
+    )
+    res.status(201).json({ username, birthdate })
 })
 
 app.delete('/users/:id', (req, res) => {
