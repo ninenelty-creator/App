@@ -1,0 +1,52 @@
+// l'ensemble des imports
+import express, { Application, Request, Response } from 'express'
+import { pool } from './db.js'
+
+interface User { 
+    id: string; username: string; birthdate?: string
+}
+
+const app: Application = express()
+const PORT = 4000
+
+const users: User[] = []
+
+app.use(express.json())
+
+// logique métier
+app.get('/users/:id', async (req, res) => {
+    const id = req.params.id
+
+    const [rows]: any = await pool.promise().query(
+        'SELECT * FROM users WHERE id = ?',
+        [id]
+    )
+
+    console.log('test route users')
+    return res.status(200).json(rows)
+})
+
+app.get('/users/:username', (req, res) => {
+    const { username } = req.params
+
+    const result = users.filter((user) => user.username.toLowerCase() === username.toLowerCase())
+    return res.json(result)
+})
+
+app.post('/users', (req, res) => {
+    const { username, birthdate } = req.body
+    const user = { id: Date.now().toString(), username, birthdate }
+    users.push(user)
+    res.status(201).json(user)
+})
+
+app.delete('/users/:id', (req, res) => {
+    const i = users.findIndex(x => x.id === req.params.id)
+    const [d] = users.splice(i, 1)
+    res.json(d)
+})
+
+// écouter sur un port
+app.listen(PORT, () => {
+    console.log(`server running on localhost:${PORT}`)
+})

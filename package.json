@@ -4,10 +4,16 @@
     "type": "module",
     "main": "server.js",
     "scripts": {
-        "dev": "node server.js"
+        "dev": "tsx watch server.ts"
     },
     "dependencies": {
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.2.3",
         "express": "5.2.1",
-        "mysql2": "^3.17.0"
+        "mysql2": "^3.17.0",
+        "tsx": "^4.21.0"
+    },
+    "devDependencies": {
+        "typescript": "^5.9.3"
     }
 }
